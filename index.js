@@ -40,6 +40,34 @@
 
 
 
+
+//Store 
+
+function Store(reducer) {
+  let state = reducer(undefined, {});
+  let cbs = [];
+
+  this.getState = function() {
+    return state;
+  }
+
+  this.subscribe = function(cb) {
+    cbs.push(cb);
+    return function test(){
+      cbs = cbs.filter((c) => c !== cb)
+    } 
+  }
+
+  this.dispatch = function(action) {
+    const newState = reducer(state, action);
+    if (newState !== state) { 
+      state = newState;  
+      for (let cb of cbs)  cb() 
+    }
+  }
+}
+
+
 // Task 'Password'
 function Password(parent, open) {
   let isOpen = open;
